@@ -230,11 +230,20 @@ if(q.get("view")==="landing"){
       <div class="date-line"><i class="fa-solid fa-calendar-days"></i>${d.dt}</div>
       <p>${d.desc}</p>
       ${getYouTubeID(d.yt)?`<iframe src="https://www.youtube.com/embed/${getYouTubeID(d.yt)}" style="width:100%;aspect-ratio:16/9;border-radius:12px"></iframe>`:""}
-      <a href="${d.pay}" class="pay" style="display:block;text-align:center;text-decoration:none">Pay Now</a>
-    </div>`;
+     <a 
+  href="${d.pay}"
+  target="_blank"
+  rel="noopener noreferrer"
+  class="pay"
+  style="display:block;text-align:center;text-decoration:none"
+>
+  Pay Now
+</a>
+
   }
 }
 </script>
 
 </body>
 </html>
+
