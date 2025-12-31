@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>UPI Payment</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+body{
+  margin:0;
+  height:100vh;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  background:#f5f7fb;
+  font-family:Inter, Arial, sans-serif;
+}
+
+.card{
+  background:#ffffff;
+  padding:28px;
+  border-radius:16px;
+  box-shadow:0 10px 30px rgba(0,0,0,0.12);
+  text-align:center;
+  width:320px;
+}
+
+.card h2{
+  margin-bottom:8px;
+  color:#0D3B66;
+}
+
+.card p{
+  font-size:14px;
+  color:#555;
+}
+
+input{
+  width:100%;
+  padding:14px;
+  margin-top:16px;
+  font-size:16px;
+  border-radius:10px;
+  border:1px solid #ddd;
+  outline:none;
+}
+
+button{
+  margin-top:18px;
+  width:100%;
+  padding:15px;
+  font-size:16px;
+  font-weight:600;
+  border:none;
+  border-radius:12px;
+  background:#0D3B66;
+  color:#ffffff;
+  cursor:pointer;
+}
+
+button:hover{
+  background:#092d4f;
+}
+</style>
+</head>
+
+<body>
+
+<div class="card">
+  <h2>Pay via UPI</h2>
+  <p>Enter any amount & pay using any UPI app</p>
+
+  <input type="number" id="amt" placeholder="Enter Amount (₹)">
+
+  <button onclick="payUPI()">Pay Now</button>
+</div>
+
+<script>
+function payUPI(){
+  var amt = document.getElementById("amt").value;
+
+  if(!amt || amt <= 0){
+    alert("Please enter a valid amount");
+    return;
+  }
+
+  var upiLink =
+    "upi://pay?pa=jadhav.h3@ybl" +
+    "&pn=Hari%20H%20Jadhav" +
+    "&am=" + amt +
+    "&cu=INR";
+
+  window.location.href = upiLink;
+}
+</script>
+
+</body>
+</html>
