@@ -13,7 +13,6 @@ body{margin:0;font-family:Arial,sans-serif;background:#f5f7fb}
 .wrap{max-width:1100px;margin:20px auto;padding:0 14px}
 .flex{display:flex;gap:20px;align-items:flex-start}
 .box{background:#fff;border-radius:16px;padding:20px;width:50%}
-
 h2,h3{margin-top:0}
 
 /* form */
@@ -31,26 +30,19 @@ button{
   font-weight:600;cursor:pointer;
   margin-top:16px;
 }
-
 .primary{background:#0D3B66;color:#fff}
 .copy{background:#2FB344;color:#fff}
 .wa{background:#25D366;color:#fff}
 
-/* animated shine */
-.anim{
-  position:relative;overflow:hidden;
-}
+/* animation */
+.anim{position:relative;overflow:hidden}
 .anim::after{
-  content:"";
-  position:absolute;top:0;left:-100%;
+  content:"";position:absolute;top:0;left:-100%;
   width:100%;height:100%;
   background:linear-gradient(120deg,transparent,rgba(255,255,255,.35),transparent);
   animation:shine 2.8s infinite;
 }
-@keyframes shine{
-  0%{left:-100%}
-  100%{left:100%}
-}
+@keyframes shine{0%{left:-100%}100%{left:100%}}
 
 /* preview */
 .preview{border:1px solid #ddd;border-radius:16px;overflow:hidden}
@@ -58,36 +50,28 @@ button{
 .poster img{width:100%;height:100%;object-fit:cover}
 .c{padding:16px;text-align:center}
 
-/* brand & title buttons */
+/* brand & title */
 .brand-btn{background:#0D3B66;color:#fff;margin-top:8px}
 .title-btn{background:#1f6fd6;color:#fff;margin-top:8px}
 
 /* date */
 .date-line{
-  margin-top:10px;
-  font-size:14px;
-  color:#555;
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  gap:8px;
+  margin-top:10px;font-size:14px;color:#555;
+  display:flex;justify-content:center;align-items:center;gap:8px
 }
 
 /* pay */
 .pay{
   margin-top:14px;padding:14px;
-  border-radius:14px;
-  background:#2FB344;color:#fff;
+  border-radius:14px;background:#2FB344;
+  color:#fff;font-weight:700
 }
 .disabled{opacity:.35;pointer-events:none}
 
 /* video */
 .video iframe{
-  width:100%;
-  aspect-ratio:16/9;
-  border-radius:12px;
-  border:none;
-  margin-top:12px;
+  width:100%;aspect-ratio:16/9;
+  border-radius:12px;border:none;margin-top:12px
 }
 
 .actions{margin-top:14px;display:none}
@@ -123,8 +107,8 @@ button{
 <label>YouTube Link (Optional)</label>
 <input id="yt" oninput="sync()" placeholder="youtube / youtu.be / shorts">
 
-<label>Payment Link</label>
-<input id="pay">
+<label>Payment Link (UPI / Gateway)</label>
+<input id="pay" placeholder="upi:// or https://">
 
 <label>Description</label>
 <textarea id="desc" oninput="sync()"></textarea>
@@ -141,7 +125,7 @@ button{
 <div class="box">
 <h3>Live Preview</h3>
 
-<div class="preview" id="preview">
+<div class="preview">
   <div class="poster" id="pimg"></div>
   <div class="c">
     <button class="brand-btn anim" id="pBrandBtn">Brand</button>
@@ -167,7 +151,7 @@ button{
 <script>
 let imageURL="", landingLink="";
 
-/* YouTube ID extractor – FIX for error 153 */
+/* YouTube ID extractor */
 function getYouTubeID(url){
   if(!url) return "";
   if(url.includes("youtu.be/")) return url.split("youtu.be/")[1].split(/[?&]/)[0];
@@ -178,72 +162,102 @@ function getYouTubeID(url){
 }
 
 function loadImg(e){
-  imageURL=URL.createObjectURL(e.target.files[0]);
-  pimg.innerHTML=`<img src="${imageURL}">`;
+  imageURL = URL.createObjectURL(e.target.files[0]);
+  pimg.innerHTML = `<img src="${imageURL}">`;
 }
 
 function sync(){
-  pBrandBtn.innerText=brand.value||"Brand";
-  pTitleBtn.innerText=title.value||"Title";
-  pdt.innerText=dt.value;
-  pdesc.innerText=desc.value;
+  pBrandBtn.innerText = brand.value || "Brand";
+  pTitleBtn.innerText = title.value || "Title";
+  pdt.innerText = dt.value;
+  pdesc.innerText = desc.value;
 
-  const vid=getYouTubeID(yt.value);
+  const vid = getYouTubeID(yt.value);
   if(vid){
-    pvideo.innerHTML=`<iframe src="https://www.youtube.com/embed/${vid}" allowfullscreen></iframe>`;
-  }else pvideo.innerHTML="";
+    pvideo.innerHTML =
+      `<iframe src="https://www.youtube.com/embed/${vid}" allowfullscreen></iframe>`;
+  }else{
+    pvideo.innerHTML = "";
+  }
 }
 
 function generate(){
-  if(!imageURL||!pay.value) return alert("Image & payment link required");
+  if(!imageURL || !pay.value){
+    alert("Image aur Payment link required");
+    return;
+  }
 
-  const id=Date.now();
-  localStorage.setItem("landing_"+id,JSON.stringify({
-    brand:brand.value,title:title.value,dt:dt.value,
-    desc:desc.value,yt:yt.value,img:imageURL,pay:pay.value
+  const id = Date.now();
+  localStorage.setItem("landing_"+id, JSON.stringify({
+    brand:brand.value,
+    title:title.value,
+    dt:dt.value,
+    desc:desc.value,
+    yt:yt.value,
+    img:imageURL,
+    pay:pay.value
   }));
 
-  landingLink=location.origin+location.pathname+"?view=landing&id="+id;
-  actions.style.display="block";
+  landingLink = location.origin + location.pathname + "?view=landing&id=" + id;
+  actions.style.display = "block";
 }
 
 function copyLink(){
   navigator.clipboard.writeText(landingLink);
-  alert("Link copied");
+  alert("Landing link copied");
 }
 
 function shareWA(){
-  window.open("https://wa.me/?text="+encodeURIComponent(landingLink));
+  window.open("https://wa.me/?text=" + encodeURIComponent(landingLink));
 }
 
-/* LANDING MODE */
-const q=new URLSearchParams(location.search);
-if(q.get("view")==="landing"){
-  const d=JSON.parse(localStorage.getItem("landing_"+q.get("id")));
-  if(!d) document.body.innerHTML="Invalid Link";
-  else{
-    document.getElementById("builder").innerHTML=
-    `<div class="box">
-      <img src="${d.img}" style="width:100%;border-radius:16px">
-      <button class="brand-btn anim">${d.brand}</button>
-      <button class="title-btn anim">${d.title}</button>
-      <div class="date-line"><i class="fa-solid fa-calendar-days"></i>${d.dt}</div>
-      <p>${d.desc}</p>
-      ${getYouTubeID(d.yt)?`<iframe src="https://www.youtube.com/embed/${getYouTubeID(d.yt)}" style="width:100%;aspect-ratio:16/9;border-radius:12px"></iframe>`:""}
-     <a 
-  href="${d.pay}"
-  target="_blank"
-  rel="noopener noreferrer"
-  class="pay"
-  style="display:block;text-align:center;text-decoration:none"
->
-  Pay Now
-</a>
+/* ===== LANDING MODE ===== */
+const q = new URLSearchParams(location.search);
+if(q.get("view") === "landing"){
+  const d = JSON.parse(localStorage.getItem("landing_" + q.get("id")));
+  if(!d){
+    document.body.innerHTML = "Invalid or expired link";
+  }else{
+    const vid = getYouTubeID(d.yt);
+    document.getElementById("builder").innerHTML = `
+      <div class="wrap">
+        <div class="box">
+          <img src="${d.img}" style="width:100%;border-radius:16px">
 
+          <button class="brand-btn anim">${d.brand}</button>
+          <button class="title-btn anim">${d.title}</button>
+
+          <div class="date-line">
+            <i class="fa-solid fa-calendar-days"></i>
+            <span>${d.dt}</span>
+          </div>
+
+          <p>${d.desc}</p>
+
+          ${vid ? `
+            <iframe 
+              src="https://www.youtube.com/embed/${vid}"
+              style="width:100%;aspect-ratio:16/9;border-radius:12px;border:none"
+              allowfullscreen>
+            </iframe>
+          ` : ""}
+
+          <!-- 🔥 PAYMENT FIX HERE -->
+          <a 
+            href="${d.pay}"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="pay"
+            style="display:block;text-align:center;text-decoration:none"
+          >
+            Pay Now
+          </a>
+        </div>
+      </div>
+    `;
   }
 }
 </script>
 
 </body>
 </html>
-
