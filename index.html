@@ -59,21 +59,50 @@ button{
   cursor:pointer;
 }
 
+/* result area */
 .result{
   margin-top:18px;
   display:none;
 }
 
+/* payment link (only link, no button) */
 .paylink{
   display:block;
   margin-top:12px;
   font-size:14px;
   word-break:break-all;
   color:#0D3B66;
-  cursor:pointer;
   text-decoration:underline;
+  cursor:pointer;
 }
 
+/* animated copy button */
+.copy-btn{
+  margin-top:12px;
+  padding:12px 18px;
+  font-size:14px;
+  font-weight:600;
+  border:none;
+  border-radius:12px;
+  background:#2FB344;
+  color:#fff;
+  cursor:pointer;
+  animation:pulse 2s infinite;
+}
+
+.copy-btn.copied{
+  background:#1f7a32;
+  animation:none;
+}
+
+/* pulse animation */
+@keyframes pulse{
+  0%{ box-shadow:0 0 0 0 rgba(47,179,68,0.6); }
+  70%{ box-shadow:0 0 0 12px rgba(47,179,68,0); }
+  100%{ box-shadow:0 0 0 0 rgba(47,179,68,0); }
+}
+
+/* QR box */
 #qrBox{
   display:none;
   margin-top:16px;
@@ -104,17 +133,17 @@ button{
 
   <div class="result" id="resultBox">
 
-    <!-- ONLY LINK (NO BUTTON) -->
-    <a href="#" id="paymentLink" class="paylink"
-       onclick="handlePayment(event)">
-    </a>
+    <!-- ONE SMART LINK -->
+    <a href="#" id="paymentLink" class="paylink" onclick="handlePayment(event)"></a>
+
+    <!-- COPY BUTTON -->
+    <button class="copy-btn" id="copyBtn" onclick="copyLink()">Copy Link</button>
 
     <!-- DESKTOP QR -->
     <div id="qrBox">
       <p><b>Scan & Pay</b></p>
       <img id="qrImg">
     </div>
-
   </div>
 
   <div class="note">
@@ -149,16 +178,21 @@ function generateLink(){
 
   document.getElementById("resultBox").style.display = "block";
   document.getElementById("qrBox").style.display = "none";
+
+  // reset copy button
+  var btn = document.getElementById("copyBtn");
+  btn.textContent = "Copy Link";
+  btn.classList.remove("copied");
 }
 
 function handlePayment(e){
   e.preventDefault();
 
-  // 📱 Mobile → direct UPI
+  // Mobile → open UPI app
   if(/Android|iPhone|iPad/i.test(navigator.userAgent)){
     window.location.href = generatedLink;
   }
-  // 💻 Desktop → QR
+  // Desktop → show QR
   else{
     var qr =
       "https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=" +
@@ -167,6 +201,14 @@ function handlePayment(e){
     document.getElementById("qrImg").src = qr;
     document.getElementById("qrBox").style.display = "block";
   }
+}
+
+function copyLink(){
+  navigator.clipboard.writeText(generatedLink).then(()=>{
+    var btn = document.getElementById("copyBtn");
+    btn.textContent = "Copied ✓";
+    btn.classList.add("copied");
+  });
 }
 </script>
 
