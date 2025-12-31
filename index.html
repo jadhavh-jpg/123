@@ -18,15 +18,15 @@ body{
 
 .card{
   background:#ffffff;
-  width:400px;
-  padding:30px;
-  border-radius:22px;
-  box-shadow:0 16px 45px rgba(0,0,0,.15);
+  width:380px;
+  padding:28px;
+  border-radius:20px;
+  box-shadow:0 14px 40px rgba(0,0,0,.15);
   text-align:center;
 }
 
 .logo{
-  font-size:28px;
+  font-size:26px;
   font-weight:800;
   color:#0D3B66;
 }
@@ -39,10 +39,10 @@ body{
 
 input{
   width:100%;
-  padding:15px;
+  padding:14px;
   margin-top:16px;
   font-size:15px;
-  border-radius:12px;
+  border-radius:10px;
   border:1px solid #ddd;
   outline:none;
 }
@@ -50,11 +50,11 @@ input{
 button{
   width:100%;
   margin-top:20px;
-  padding:16px;
+  padding:15px;
   font-size:16px;
   font-weight:600;
   border:none;
-  border-radius:16px;
+  border-radius:14px;
   background:#0D3B66;
   color:#ffffff;
   cursor:pointer;
@@ -64,25 +64,11 @@ button:hover{
   background:#092d4f;
 }
 
-.result{
-  margin-top:20px;
-  display:none;
-}
-
-.result input{
-  margin-top:10px;
-  font-size:14px;
-  cursor:pointer;
-}
-
-.link-box{
-  margin-top:10px;
-}
-
+/* payment link button */
 .link-btn{
   display:block;
-  margin-top:12px;
-  padding:14px;
+  margin-top:14px;
+  padding:15px;
   background:#2FB344;
   color:#fff;
   text-decoration:none;
@@ -90,6 +76,12 @@ button:hover{
   font-weight:600;
 }
 
+.result{
+  margin-top:18px;
+  display:none;
+}
+
+/* QR box */
 #qrBox{
   display:none;
   margin-top:18px;
@@ -124,23 +116,20 @@ button:hover{
   <!-- RESULT -->
   <div class="result" id="resultBox">
 
-    <!-- PAYMENT LINK -->
-    <div class="link-box">
-      <a href="#" id="payLinkBtn" class="link-btn" onclick="openPayment(event)">
-        Click to Pay
-      </a>
-    </div>
+    <!-- CLICK TO PAY -->
+    <a href="#" class="link-btn" onclick="openPayment(event)">
+      Click to Pay
+    </a>
 
-    <!-- QR FOR DESKTOP -->
+    <!-- DESKTOP QR -->
     <div id="qrBox">
       <p><b>Scan & Pay</b></p>
       <img id="qrImg">
     </div>
-
   </div>
 
   <div class="note">
-    Works with all UPI apps • Mobile & Desktop supported
+    Works with Google Pay, PhonePe, Paytm, BHIM & all UPI apps
   </div>
 </div>
 
@@ -173,15 +162,16 @@ function generateLink(){
 function openPayment(e){
   e.preventDefault();
 
-  // Mobile → direct UPI app
+  // 📱 Mobile → UPI app
   if(/Android|iPhone|iPad/i.test(navigator.userAgent)){
     window.location.href = generatedLink;
   }
-  // Desktop → show QR
+  // 💻 Desktop → QR code
   else{
     var qr =
       "https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=" +
       encodeURIComponent(generatedLink);
+
     document.getElementById("qrImg").src = qr;
     document.getElementById("qrBox").style.display = "block";
   }
