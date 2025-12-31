@@ -78,22 +78,29 @@ button:hover{
 <script>
 function payUPI(){
   var amt = document.getElementById("amt").value;
-
   if(!amt || amt <= 0){
-    alert("Please enter a valid amount");
+    alert("Please enter valid amount");
     return;
   }
 
-  var upiLink =
-    "upi://pay?pa=jadhav.h3@ybl" +
-    "&pn=Hari%20H%20Jadhav" +
-    "&am=" + amt +
-    "&cu=INR";
+  var upi =
+    "upi://pay?pa=jadhav.h3@ybl&pn=Hari%20H%20Jadhav&am=" +
+    amt + "&cu=INR";
 
-  window.location.href = upiLink;
+  // Android intent fallback
+  if(/Android/i.test(navigator.userAgent)){
+    window.location.href =
+      "intent://pay?pa=jadhav.h3@ybl&pn=Hari%20H%20Jadhav&am=" +
+      amt +
+      "&cu=INR#Intent;scheme=upi;end";
+  }else{
+    window.location.href = upi;
+  }
 }
 </script>
 
+
 </body>
 </html>
+
 
