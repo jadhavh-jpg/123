@@ -2,213 +2,237 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>PayMoney – Generate Payment Link</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PayMoney – Landing Builder</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
 <style>
-body{
-  margin:0;
-  font-family:Inter, Arial, sans-serif;
-  background:#f5f7fb;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  height:100vh;
-}
+*{box-sizing:border-box}
+body{margin:0;font-family:Arial,sans-serif;background:#f5f7fb}
+.wrap{max-width:1100px;margin:20px auto;padding:0 14px}
+.flex{display:flex;gap:20px;align-items:flex-start}
+.box{background:#fff;border-radius:16px;padding:20px;width:50%}
 
-.card{
-  background:#ffffff;
-  width:380px;
-  padding:28px;
-  border-radius:20px;
-  box-shadow:0 14px 40px rgba(0,0,0,.15);
-  text-align:center;
-}
+h2,h3{margin-top:0}
 
-.logo{
-  font-size:26px;
-  font-weight:800;
-  color:#0D3B66;
+/* form */
+label{font-weight:600;margin-top:14px;display:block}
+input,textarea{
+  width:100%;padding:12px;border-radius:8px;
+  border:1px solid #ccc;margin-top:6px;font-size:15px
 }
+textarea{min-height:90px}
 
-.subtitle{
-  margin-top:6px;
-  font-size:15px;
-  color:#555;
-}
-
-input{
-  width:100%;
-  padding:14px;
-  margin-top:16px;
-  font-size:15px;
-  border-radius:10px;
-  border:1px solid #ddd;
-}
-
+/* buttons */
 button{
-  width:100%;
-  margin-top:20px;
-  padding:15px;
-  font-size:16px;
-  font-weight:600;
-  border:none;
-  border-radius:14px;
-  background:#0D3B66;
-  color:#fff;
-  cursor:pointer;
-}
-
-/* result area */
-.result{
-  margin-top:18px;
-  display:none;
-}
-
-/* payment link (only link, no button) */
-.paylink{
-  display:block;
-  margin-top:12px;
-  font-size:14px;
-  word-break:break-all;
-  color:#0D3B66;
-  text-decoration:underline;
-  cursor:pointer;
-}
-
-/* animated copy button */
-.copy-btn{
-  margin-top:12px;
-  padding:12px 18px;
-  font-size:14px;
-  font-weight:600;
-  border:none;
-  border-radius:12px;
-  background:#2FB344;
-  color:#fff;
-  cursor:pointer;
-  animation:pulse 2s infinite;
-}
-
-.copy-btn.copied{
-  background:#1f7a32;
-  animation:none;
-}
-
-/* pulse animation */
-@keyframes pulse{
-  0%{ box-shadow:0 0 0 0 rgba(47,179,68,0.6); }
-  70%{ box-shadow:0 0 0 12px rgba(47,179,68,0); }
-  100%{ box-shadow:0 0 0 0 rgba(47,179,68,0); }
-}
-
-/* QR box */
-#qrBox{
-  display:none;
+  width:100%;padding:14px;border:none;
+  border-radius:14px;font-size:16px;
+  font-weight:600;cursor:pointer;
   margin-top:16px;
 }
 
-#qrBox img{
-  width:220px;
+.primary{background:#0D3B66;color:#fff}
+.copy{background:#2FB344;color:#fff}
+.wa{background:#25D366;color:#fff}
+
+/* animated shine */
+.anim{
+  position:relative;overflow:hidden;
+}
+.anim::after{
+  content:"";
+  position:absolute;top:0;left:-100%;
+  width:100%;height:100%;
+  background:linear-gradient(120deg,transparent,rgba(255,255,255,.35),transparent);
+  animation:shine 2.8s infinite;
+}
+@keyframes shine{
+  0%{left:-100%}
+  100%{left:100%}
 }
 
-.note{
-  margin-top:14px;
-  font-size:12px;
-  color:#777;
+/* preview */
+.preview{border:1px solid #ddd;border-radius:16px;overflow:hidden}
+.poster{aspect-ratio:2/3;background:#eee}
+.poster img{width:100%;height:100%;object-fit:cover}
+.c{padding:16px;text-align:center}
+
+/* brand & title buttons */
+.brand-btn{background:#0D3B66;color:#fff;margin-top:8px}
+.title-btn{background:#1f6fd6;color:#fff;margin-top:8px}
+
+/* date */
+.date-line{
+  margin-top:10px;
+  font-size:14px;
+  color:#555;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  gap:8px;
+}
+
+/* pay */
+.pay{
+  margin-top:14px;padding:14px;
+  border-radius:14px;
+  background:#2FB344;color:#fff;
+}
+.disabled{opacity:.35;pointer-events:none}
+
+/* video */
+.video iframe{
+  width:100%;
+  aspect-ratio:16/9;
+  border-radius:12px;
+  border:none;
+  margin-top:12px;
+}
+
+.actions{margin-top:14px;display:none}
+
+@media(max-width:900px){
+  .flex{flex-direction:column}
+  .box{width:100%}
 }
 </style>
 </head>
 
 <body>
 
-<div class="card">
-  <div class="logo">PayMoney</div>
-  <div class="subtitle">Generate Payment Link</div>
+<div class="wrap" id="builder">
+<div class="flex">
 
-  <input type="text" id="upi" placeholder="Enter your UPI ID (example@upi)">
-  <input type="number" id="amt" placeholder="Enter Amount (₹)">
+<!-- LEFT -->
+<div class="box">
+<h2>Create Landing</h2>
 
-  <button onclick="generateLink()">Generate Payment Link</button>
+<label>Brand</label>
+<input id="brand" oninput="sync()">
 
-  <div class="result" id="resultBox">
+<label>Poster Image (Required)</label>
+<input type="file" accept="image/*" onchange="loadImg(event)">
 
-    <!-- ONE SMART LINK -->
-    <a href="#" id="paymentLink" class="paylink" onclick="handlePayment(event)"></a>
+<label>Title</label>
+<input id="title" oninput="sync()">
 
-    <!-- COPY BUTTON -->
-    <button class="copy-btn" id="copyBtn" onclick="copyLink()">Copy Link</button>
+<label>Date & Time</label>
+<input type="datetime-local" id="dt" oninput="sync()">
 
-    <!-- DESKTOP QR -->
-    <div id="qrBox">
-      <p><b>Scan & Pay</b></p>
-      <img id="qrImg">
+<label>YouTube Link (Optional)</label>
+<input id="yt" oninput="sync()" placeholder="youtube / youtu.be / shorts">
+
+<label>Payment Link</label>
+<input id="pay">
+
+<label>Description</label>
+<textarea id="desc" oninput="sync()"></textarea>
+
+<button class="primary anim" onclick="generate()">Generate Landing Page</button>
+
+<div class="actions" id="actions">
+  <button class="copy anim" onclick="copyLink()">Copy Landing Link</button>
+  <button class="wa anim" onclick="shareWA()">Share on WhatsApp</button>
+</div>
+</div>
+
+<!-- RIGHT -->
+<div class="box">
+<h3>Live Preview</h3>
+
+<div class="preview" id="preview">
+  <div class="poster" id="pimg"></div>
+  <div class="c">
+    <button class="brand-btn anim" id="pBrandBtn">Brand</button>
+    <button class="title-btn anim" id="pTitleBtn">Title</button>
+
+    <div class="date-line">
+      <i class="fa-solid fa-calendar-days"></i>
+      <span id="pdt"></span>
     </div>
-  </div>
 
-  <div class="note">
-    One link • Mobile pays • Desktop shows QR
+    <p id="pdesc"></p>
+
+    <div class="video" id="pvideo"></div>
+
+    <div class="pay disabled">Pay Now (Preview)</div>
   </div>
+</div>
+</div>
+
+</div>
 </div>
 
 <script>
-var generatedLink = "";
+let imageURL="", landingLink="";
 
-function generateLink(){
-  var upi = document.getElementById("upi").value.trim();
-  var amt = document.getElementById("amt").value;
-
-  if(!upi || upi.indexOf("@") === -1){
-    alert("Enter valid UPI ID");
-    return;
-  }
-  if(!amt || amt <= 0){
-    alert("Enter valid amount");
-    return;
-  }
-
-  generatedLink =
-    "upi://pay?pa=" + encodeURIComponent(upi) +
-    "&pn=PayMoney" +
-    "&am=" + amt +
-    "&cu=INR";
-
-  var linkEl = document.getElementById("paymentLink");
-  linkEl.textContent = generatedLink;
-
-  document.getElementById("resultBox").style.display = "block";
-  document.getElementById("qrBox").style.display = "none";
-
-  // reset copy button
-  var btn = document.getElementById("copyBtn");
-  btn.textContent = "Copy Link";
-  btn.classList.remove("copied");
+/* YouTube ID extractor – FIX for error 153 */
+function getYouTubeID(url){
+  if(!url) return "";
+  if(url.includes("youtu.be/")) return url.split("youtu.be/")[1].split(/[?&]/)[0];
+  if(url.includes("v=")) return url.split("v=")[1].split("&")[0];
+  if(url.includes("/shorts/")) return url.split("/shorts/")[1].split(/[?&]/)[0];
+  if(url.includes("/embed/")) return url.split("/embed/")[1].split(/[?&]/)[0];
+  return "";
 }
 
-function handlePayment(e){
-  e.preventDefault();
+function loadImg(e){
+  imageURL=URL.createObjectURL(e.target.files[0]);
+  pimg.innerHTML=`<img src="${imageURL}">`;
+}
 
-  // Mobile → open UPI app
-  if(/Android|iPhone|iPad/i.test(navigator.userAgent)){
-    window.location.href = generatedLink;
-  }
-  // Desktop → show QR
-  else{
-    var qr =
-      "https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=" +
-      encodeURIComponent(generatedLink);
+function sync(){
+  pBrandBtn.innerText=brand.value||"Brand";
+  pTitleBtn.innerText=title.value||"Title";
+  pdt.innerText=dt.value;
+  pdesc.innerText=desc.value;
 
-    document.getElementById("qrImg").src = qr;
-    document.getElementById("qrBox").style.display = "block";
-  }
+  const vid=getYouTubeID(yt.value);
+  if(vid){
+    pvideo.innerHTML=`<iframe src="https://www.youtube.com/embed/${vid}" allowfullscreen></iframe>`;
+  }else pvideo.innerHTML="";
+}
+
+function generate(){
+  if(!imageURL||!pay.value) return alert("Image & payment link required");
+
+  const id=Date.now();
+  localStorage.setItem("landing_"+id,JSON.stringify({
+    brand:brand.value,title:title.value,dt:dt.value,
+    desc:desc.value,yt:yt.value,img:imageURL,pay:pay.value
+  }));
+
+  landingLink=location.origin+location.pathname+"?view=landing&id="+id;
+  actions.style.display="block";
 }
 
 function copyLink(){
-  navigator.clipboard.writeText(generatedLink).then(()=>{
-    var btn = document.getElementById("copyBtn");
-    btn.textContent = "Copied ✓";
-    btn.classList.add("copied");
-  });
+  navigator.clipboard.writeText(landingLink);
+  alert("Link copied");
+}
+
+function shareWA(){
+  window.open("https://wa.me/?text="+encodeURIComponent(landingLink));
+}
+
+/* LANDING MODE */
+const q=new URLSearchParams(location.search);
+if(q.get("view")==="landing"){
+  const d=JSON.parse(localStorage.getItem("landing_"+q.get("id")));
+  if(!d) document.body.innerHTML="Invalid Link";
+  else{
+    document.getElementById("builder").innerHTML=
+    `<div class="box">
+      <img src="${d.img}" style="width:100%;border-radius:16px">
+      <button class="brand-btn anim">${d.brand}</button>
+      <button class="title-btn anim">${d.title}</button>
+      <div class="date-line"><i class="fa-solid fa-calendar-days"></i>${d.dt}</div>
+      <p>${d.desc}</p>
+      ${getYouTubeID(d.yt)?`<iframe src="https://www.youtube.com/embed/${getYouTubeID(d.yt)}" style="width:100%;aspect-ratio:16/9;border-radius:12px"></iframe>`:""}
+      <a href="${d.pay}" class="pay" style="display:block;text-align:center;text-decoration:none">Pay Now</a>
+    </div>`;
+  }
 }
 </script>
 
