@@ -44,7 +44,6 @@ input{
   font-size:15px;
   border-radius:10px;
   border:1px solid #ddd;
-  outline:none;
 }
 
 button{
@@ -56,24 +55,8 @@ button{
   border:none;
   border-radius:14px;
   background:#0D3B66;
-  color:#ffffff;
-  cursor:pointer;
-}
-
-button:hover{
-  background:#092d4f;
-}
-
-/* payment link button */
-.link-btn{
-  display:block;
-  margin-top:14px;
-  padding:15px;
-  background:#2FB344;
   color:#fff;
-  text-decoration:none;
-  border-radius:14px;
-  font-weight:600;
+  cursor:pointer;
 }
 
 .result{
@@ -81,10 +64,19 @@ button:hover{
   display:none;
 }
 
-/* QR box */
+.paylink{
+  display:block;
+  margin-top:12px;
+  font-size:14px;
+  word-break:break-all;
+  color:#0D3B66;
+  cursor:pointer;
+  text-decoration:underline;
+}
+
 #qrBox{
   display:none;
-  margin-top:18px;
+  margin-top:16px;
 }
 
 #qrBox img{
@@ -102,23 +94,19 @@ button:hover{
 <body>
 
 <div class="card">
-  <!-- HEADLINE -->
   <div class="logo">PayMoney</div>
   <div class="subtitle">Generate Payment Link</div>
 
-  <!-- INPUTS -->
   <input type="text" id="upi" placeholder="Enter your UPI ID (example@upi)">
   <input type="number" id="amt" placeholder="Enter Amount (₹)">
 
-  <!-- GENERATE -->
   <button onclick="generateLink()">Generate Payment Link</button>
 
-  <!-- RESULT -->
   <div class="result" id="resultBox">
 
-    <!-- CLICK TO PAY -->
-    <a href="#" class="link-btn" onclick="openPayment(event)">
-      Click to Pay
+    <!-- ONLY LINK (NO BUTTON) -->
+    <a href="#" id="paymentLink" class="paylink"
+       onclick="handlePayment(event)">
     </a>
 
     <!-- DESKTOP QR -->
@@ -126,10 +114,11 @@ button:hover{
       <p><b>Scan & Pay</b></p>
       <img id="qrImg">
     </div>
+
   </div>
 
   <div class="note">
-    Works with Google Pay, PhonePe, Paytm, BHIM & all UPI apps
+    One link • Mobile pays • Desktop shows QR
   </div>
 </div>
 
@@ -141,11 +130,11 @@ function generateLink(){
   var amt = document.getElementById("amt").value;
 
   if(!upi || upi.indexOf("@") === -1){
-    alert("Please enter a valid UPI ID");
+    alert("Enter valid UPI ID");
     return;
   }
   if(!amt || amt <= 0){
-    alert("Please enter a valid amount");
+    alert("Enter valid amount");
     return;
   }
 
@@ -155,18 +144,21 @@ function generateLink(){
     "&am=" + amt +
     "&cu=INR";
 
+  var linkEl = document.getElementById("paymentLink");
+  linkEl.textContent = generatedLink;
+
   document.getElementById("resultBox").style.display = "block";
   document.getElementById("qrBox").style.display = "none";
 }
 
-function openPayment(e){
+function handlePayment(e){
   e.preventDefault();
 
-  // 📱 Mobile → UPI app
+  // 📱 Mobile → direct UPI
   if(/Android|iPhone|iPad/i.test(navigator.userAgent)){
     window.location.href = generatedLink;
   }
-  // 💻 Desktop → QR code
+  // 💻 Desktop → QR
   else{
     var qr =
       "https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=" +
